@@ -16,6 +16,7 @@ namespace Assets._Project.Scripts.Cars
         public Camera Camera;
         public CarConfiguration[] Cars;
         public RaceTrack Track;
+        public RaceState RaceState;
 
         public void Start()
         {
@@ -38,9 +39,13 @@ namespace Assets._Project.Scripts.Cars
                 {
                     Camera.GetComponent<FollowCam>().Target = car.transform;
                     Camera.GetComponent<DepthOfField>().focalTransform = car.transform;
+                    GetComponent<Hud>().Car = carComponent;
                 }
+                RaceState.AddCar(carComponent, carConfig.OwnsCamera);
                 i++;
             }
+
+            RaceState.BeginRace();
         }
     }
 

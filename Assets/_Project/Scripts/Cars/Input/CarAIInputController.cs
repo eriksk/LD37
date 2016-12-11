@@ -35,10 +35,12 @@ namespace Assets._Project.Scripts.Cars.Input
 
             var brake = Mathf.Abs(steerAngle) > 0.7f;
 
-            //var steerDirection = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
-            //Debug.DrawLine(car.transform.position, car.transform.position + steerDirection * 8f, Color.yellow, 0.1f);
+            car.UpdateInput(steerAngle:steerAngle, motor: brake ? 0.2f : UnityEngine.Random.Range(0.75f, 0.85f), brakes: 0f);
 
-            car.UpdateInput(steerAngle:steerAngle, motor: brake ? 0.2f : 0.8f, brakes: 0f);
+            if (car._timeNotGrounded > 5f)
+                car.Reset();
+            if (car.AiVariables.TimeWithVelocityBelowTreshold > 3f)
+                car.Reset();
         }
 
         private TrackPath GetBestPathForIndex(Vector3 position, RaceTrackPaths paths, int index)

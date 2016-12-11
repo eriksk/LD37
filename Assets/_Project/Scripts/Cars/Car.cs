@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Assets._Project.Scripts.Cars;
 using Assets._Project.Scripts.Tracks;
+using Assets._Project.Scripts.Game;
 
 public class Car : MonoBehaviour
 {
@@ -19,9 +20,12 @@ public class Car : MonoBehaviour
 
     public float DownForce = 10f;
 
+    public float TimeNotGroundedTresholdDownForce = 0.2f;
+
     private float _steerAngle;
     private float _motorTorque;
     private float _brakeTorque;
+    private bool _isEngaged = false;
 
     private Rigidbody _rigidyBody;
     public CarController Controller;
@@ -35,6 +39,16 @@ public class Car : MonoBehaviour
         _rigidyBody = GetComponent<Rigidbody>();
     }
 
+    public void EngageControl()
+    {
+        _isEngaged = true;
+    }
+
+    public int CurrentSpeed
+    {
+        get { return (int)_rigidyBody.velocity.magnitude; }
+    }
+
     public void UpdateInput(float steerAngle, float motor, float brakes)
     {
         _steerAngle = steerAngle;
@@ -42,6 +56,7 @@ public class Car : MonoBehaviour
         _brakeTorque = brakes;
     }
 
+    public float _timeNotGrounded;
     void FixedUpdate()
     {
         var grounded = false;
@@ -60,21 +75,40 @@ public class Car : MonoBehaviour
             }
         }
 
-        //Debug.Log("Slip: F: " + forwardSlip + ", S: " + sideSlip);
+        if (!grounded)
+        {
+            _timeNotGrounded += Time.deltaTime;
+        }
+        else
+        {
+            _timeNotGrounded = 0f;
+        }
 
+
+        float downForce = _timeNotGrounded > TimeNotGroundedTresholdDownForce ? 0f : 1f;
         var velocity = _rigidyBody.velocity.magnitude;
-        //Debug.Log("Force: " + (DownForce * velocity));
-        _rigidyBody.AddForce(transform.up * -DownForce * velocity * (grounded ? 1f : 0.2f));
+        _rigidyBody.AddForce(transform.up * -DownForce * velocity * downForce);
     }
 
     void Update ()
     {
+        if (!_isEngaged) return;
+
         Controller.UpdateControl(this, Track);
 
         if (Wheels == null) return;
 
         foreach (var wheel in Wheels)
             ApplyWheel(wheel);
+
+        if(CurrentSpeed <= AiVariables.VelocityCheckTreshold)
+        {
+            AiVariables.TimeWithVelocityBelowTreshold += Time.deltaTime;
+        }
+        else
+        {
+            AiVariables.TimeWithVelocityBelowTreshold = 0f;
+        }
     }
 
     private void ApplyWheel(WheelSetting wheel)
@@ -94,6 +128,27 @@ public class Car : MonoBehaviour
         wheel.Model.rotation = wheel.Flip ? worldRotation * Quaternion.Euler(0f, 180, 0f):  worldRotation;
 
     }
+
+    public void Reset()
+    {
+        AiVariables.Reset();
+        _timeNotGrounded = 0f;
+        var state = GetComponent<RaceProgressState>();
+        var checkpoint = state.GetCurrentResetCheckpoint();
+        var nextCheckpoint = state.GetNextCheckpoint();
+
+        _rigidyBody.velocity = Vector3.zero;
+        _rigidyBody.angularVelocity = Vector3.zero;
+        foreach (var wheel in Wheels)
+        {
+            wheel.Collider.motorTorque = 0;
+            wheel.Collider.brakeTorque = 1000000;
+            wheel.Collider.steerAngle = 0;
+        }
+
+        transform.position = checkpoint.transform.position + (Vector3.up * 3f);
+        transform.LookAt(nextCheckpoint.transform.position);
+    }
 }
 
 [Serializable]
@@ -111,4 +166,12 @@ public class WheelSetting
 public class CarAiVariables
 {
     public float Angle;
+    public float VelocityCheckTreshold = 3;
+    public float TimeWithVelocityBelowTreshold = 0f;
+
+    internal void Reset()
+    {
+        Angle = 0;
+        TimeWithVelocityBelowTreshold = 0f;
+    }
 }

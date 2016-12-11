@@ -20,6 +20,11 @@ namespace Assets._Project.Scripts.Cars.Input
             var steering = h;
 
             car.UpdateInput(steering, motor, brakes);
+
+            if (UnityEngine.Input.GetButtonDown("Submit"))
+            {
+                car.Reset();
+            }
         }
     }
 }

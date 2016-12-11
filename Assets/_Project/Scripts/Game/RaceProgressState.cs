@@ -13,14 +13,44 @@ namespace Assets._Project.Scripts.Game
         private Car _car;
         public int CurrentCheckPoint = 0;
         public int LapCount = 0;
+        public int NumberOfLaps = 2;
+
+        private RaceTrackCheckpoints _checkpoints;
+
+        public float RaceProgress
+        {
+            get
+            {
+                if (_checkpoints == null) return 0;
+
+                float oneSegmentCountsAs = 1000f;
+
+                float total = 0f;
+
+                // previous laps
+                total += (LapCount * _checkpoints.Checkpoints) * oneSegmentCountsAs;
+                total += CurrentCheckPoint * oneSegmentCountsAs;
+
+                var current = _checkpoints.GetCheckpoint(CurrentCheckPoint);
+                //var next = _checkpoints.GetNextCheckpoint(CurrentCheckPoint);
+
+                var myDistance = Vector3.Distance(transform.position, current.transform.position);
+
+                total += myDistance;
+
+                return total;
+            }
+        }
 
         void Start()
         {
             _car = GetComponent<Car>();
+            _checkpoints = _car.Track.GetComponent<RaceTrackCheckpoints>();
         }
 
         void Update()
         {
+
 
         }
 
@@ -35,6 +65,15 @@ namespace Assets._Project.Scripts.Game
             {
                 LapCount++;
             }
+        }
+
+        public Checkpoint GetCurrentResetCheckpoint()
+        {
+            return _checkpoints.GetCheckpoint(CurrentCheckPoint);
+        }
+        public Checkpoint GetNextCheckpoint()
+        {
+            return _checkpoints.GetNextCheckpoint(CurrentCheckPoint);
         }
     }
 }
