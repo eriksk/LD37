@@ -36,7 +36,7 @@ namespace Assets._Project.Scripts.Tracks
             DestroyTrackMeshes();
 
             CreateTrackMeshChild("Track", meshData.Track, TrackMaterial);
-            //CreateTrackMeshChild("Track Sides", meshData.Sides, TrackSidesMaterial);
+            CreateTrackMeshChild("Track Sides", meshData.Sides, TrackSidesMaterial);
 
         }
 

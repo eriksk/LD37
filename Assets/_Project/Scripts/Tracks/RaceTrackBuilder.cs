@@ -19,15 +19,13 @@ namespace Assets._Project.Scripts.Tracks
 
             track.Track.IterateSpline((splineNodeInfo) =>
             {
-                // TODO: Upvectors don't work?!
-
                 var position = splineNodeInfo.Position;
                 var rotation = splineNodeInfo.Rotation;
-                var upVector = splineNodeInfo.UpVector * -Mathf.Rad2Deg;
+                var upVector = Quaternion.FromToRotation(Vector3.up, splineNodeInfo.UpVector).eulerAngles;
 
                 var lastPosition = splineNodeInfo.LastPosition;
                 var lastRotation = splineNodeInfo.LastRotation;
-                var lastUpVector = splineNodeInfo.LastUpVector * -Mathf.Rad2Deg;
+                var lastUpVector = Quaternion.FromToRotation(Vector3.up, splineNodeInfo.LastUpVector).eulerAngles;
 
                 var left =  rotation * Vector3.left;
                 var right = rotation * Vector3.right;
