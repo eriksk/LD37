@@ -26,7 +26,7 @@ namespace Assets._Project.Scripts.Cameras
         void Update()
         {
             if (_cam == null) return;
-
+            if (Target == null) return;
 
             var desiredPosition = Target.position + (-Target.forward * Distance) + (Vector3.up * Height);
             var currentPosition = transform.position;

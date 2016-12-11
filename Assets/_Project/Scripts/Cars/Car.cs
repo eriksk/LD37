@@ -3,6 +3,8 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Assets._Project.Scripts.Cars;
+using Assets._Project.Scripts.Tracks;
 
 public class Car : MonoBehaviour
 {
@@ -22,9 +24,14 @@ public class Car : MonoBehaviour
     private float _brakeTorque;
 
     private Rigidbody _rigidyBody;
+    public CarController Controller;
+    public RaceTrack Track;
+
+    public CarAiVariables AiVariables = new CarAiVariables();
 
     void Start ()
     {
+        AiVariables = new CarAiVariables();
         _rigidyBody = GetComponent<Rigidbody>();
     }
 
@@ -39,6 +46,8 @@ public class Car : MonoBehaviour
     {
         var grounded = false;
 
+        float forwardSlip = 0;
+        float sideSlip = 0;
         for (int i = 0; i < Wheels.Count; i++)
         {
             var wheel = Wheels[i];
@@ -46,16 +55,22 @@ public class Car : MonoBehaviour
             if(wheel.Collider.GetGroundHit(out hit))
             {
                 grounded = true;
+                forwardSlip += hit.forwardSlip;
+                sideSlip += hit.sidewaysSlip;
             }
         }
 
+        //Debug.Log("Slip: F: " + forwardSlip + ", S: " + sideSlip);
+
         var velocity = _rigidyBody.velocity.magnitude;
-        Debug.Log("Force: " + (DownForce * velocity));
+        //Debug.Log("Force: " + (DownForce * velocity));
         _rigidyBody.AddForce(transform.up * -DownForce * velocity * (grounded ? 1f : 0.2f));
     }
 
     void Update ()
     {
+        Controller.UpdateControl(this, Track);
+
         if (Wheels == null) return;
 
         foreach (var wheel in Wheels)
@@ -91,4 +106,9 @@ public class WheelSetting
     public bool Steering;
     public bool Brakes;
     public bool Flip;
+}
+
+public class CarAiVariables
+{
+    public float Angle;
 }

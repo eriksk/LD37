@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets._Project.Scripts.Tracks;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,17 +7,10 @@ using UnityEngine;
 
 namespace Assets._Project.Scripts.Cars.Input
 {
-    [RequireComponent(typeof(Car))]
-    public class CarPlayerInputController : MonoBehaviour
+    [CreateAssetMenu(fileName = "Custom/Cars/Player Controller")]
+    public class CarPlayerInputController : CarController
     {
-        private Car _car;
-
-        void Start()
-        {
-            _car = GetComponent<Car>();
-        }
-
-        void Update()
+        public override void UpdateControl(Car car, RaceTrack track)
         {
             var v = UnityEngine.Input.GetAxis("Vertical");
             var h = UnityEngine.Input.GetAxis("Horizontal");
@@ -25,7 +19,7 @@ namespace Assets._Project.Scripts.Cars.Input
             var brakes = v < 0f ? -v : 0f;
             var steering = h;
 
-            _car.UpdateInput(steering, motor, brakes);
+            car.UpdateInput(steering, motor, brakes);
         }
     }
 }
