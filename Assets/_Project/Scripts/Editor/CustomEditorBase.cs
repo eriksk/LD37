@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEditor;
+using System.Collections.Generic;
 
 namespace Assets._Project.Scripts.Editor
 {
@@ -10,6 +11,19 @@ namespace Assets._Project.Scripts.Editor
         public T Target
         {
             get { return target as T; }
+        }
+        public T[] Targets
+        {
+            get
+            {
+                if(targets == null)
+                    return new T[0];
+
+                var ts = new List<T>();
+                foreach (var target in targets)
+                    ts.Add(target as T);
+                return ts.ToArray();
+            }
         }
 
         protected bool TrigVector2Field(string name, Func<T, Vector2> callback, out Vector2 newValue)

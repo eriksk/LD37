@@ -15,10 +15,12 @@ namespace Assets._Project.Scripts.Cameras
         public float Distance = 10f;
 
         private Camera _cam;
+        private Rigidbody _rigidBody;
 
         void Start()
         {
             _cam = GetComponent<Camera>();
+            _rigidBody = GetComponent<Rigidbody>();
         }
 
         void Update()
@@ -28,8 +30,17 @@ namespace Assets._Project.Scripts.Cameras
 
             var desiredPosition = Target.position + (-Target.forward * Distance) + (Vector3.up * Height);
             var currentPosition = transform.position;
-            transform.position = Vector3.Lerp(currentPosition, desiredPosition, Time.deltaTime * Damping);
-            transform.LookAt(Target.position);
+            var targetPosition = Vector3.Lerp(currentPosition, desiredPosition, Time.deltaTime * Damping);
+            if (_rigidBody != null)
+            {
+                _rigidBody.MovePosition(targetPosition);
+                _rigidBody.MoveRotation(Quaternion.LookRotation(Target.position - transform.position));
+            }
+            else
+            {
+                transform.position = targetPosition;
+                transform.LookAt(Target.position);
+            }
         }
     }
 }

@@ -26,7 +26,7 @@ GameObject:
   - 114: {fileID: 114000010205880980}
   - 114: {fileID: 114000013865477912}
   - 114: {fileID: 114000010141705266}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: enzo_red
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -330,8 +330,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010940140624}
-  m_LocalRotation: {x: -0, y: -0.70710576, z: -0, w: 0.7071079}
-  m_LocalPosition: {x: -31.7, y: 63.61, z: -105.44}
+  m_LocalRotation: {x: 0.0074402783, y: 0.9741867, z: -0.03246403, w: 0.22327337}
+  m_LocalPosition: {x: -130.51776, y: 47.996784, z: 110.80951}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_LocalEulerAnglesHint: {x: 0, y: -90.00001, z: 0}
   m_Children:
@@ -728,9 +728,10 @@ MonoBehaviour:
     Steering: 0
     Brakes: 1
     Flip: 1
-  SteeringRange: 15
+  SteeringRange: 20
   EngineForce: 500
   BrakeForce: 166
+  DownForce: 5000
 --- !u!114 &114000013865477912
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -2,6 +2,7 @@
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Car : MonoBehaviour
 {
@@ -14,13 +15,17 @@ public class Car : MonoBehaviour
     [Range(0f, 1000f)]
     public float BrakeForce = 100f;
 
+    public float DownForce = 10f;
+
     private float _steerAngle;
     private float _motorTorque;
     private float _brakeTorque;
 
+    private Rigidbody _rigidyBody;
+
     void Start ()
     {
-    
+        _rigidyBody = GetComponent<Rigidbody>();
     }
 
     public void UpdateInput(float steerAngle, float motor, float brakes)
@@ -28,6 +33,25 @@ public class Car : MonoBehaviour
         _steerAngle = steerAngle;
         _motorTorque = motor;
         _brakeTorque = brakes;
+    }
+
+    void FixedUpdate()
+    {
+        var grounded = false;
+
+        for (int i = 0; i < Wheels.Count; i++)
+        {
+            var wheel = Wheels[i];
+            WheelHit hit;
+            if(wheel.Collider.GetGroundHit(out hit))
+            {
+                grounded = true;
+            }
+        }
+
+        var velocity = _rigidyBody.velocity.magnitude;
+        Debug.Log("Force: " + (DownForce * velocity));
+        _rigidyBody.AddForce(transform.up * -DownForce * velocity * (grounded ? 1f : 0.2f));
     }
 
     void Update ()
