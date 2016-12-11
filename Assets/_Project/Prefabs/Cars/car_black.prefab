@@ -718,10 +718,12 @@ MonoBehaviour:
     Flip: 1
   SteeringRange: 20
   EngineForce: 300
-  BrakeForce: 166
+  BrakeForce: 680
   DownForce: 400
+  TimeNotGroundedTresholdDownForce: 0.2
   Controller: {fileID: 0}
   Track: {fileID: 0}
+  _timeNotGrounded: 0
 --- !u!114 &114000011335606534
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -733,6 +735,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f555348b75898b44bf28c0173c86b87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CurrentCheckPoint: 0
+  LapCount: 0
+  NumberOfLaps: 2
 --- !u!146 &146000011416942122
 WheelCollider:
   m_ObjectHideFlags: 1

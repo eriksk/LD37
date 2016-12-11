@@ -46,7 +46,7 @@ public class Car : MonoBehaviour
 
     public int CurrentSpeed
     {
-        get { return (int)_rigidyBody.velocity.magnitude; }
+        get { return _rigidyBody == null ? 0 : (int)_rigidyBody.velocity.magnitude; }
     }
 
     public void UpdateInput(float steerAngle, float motor, float brakes)
